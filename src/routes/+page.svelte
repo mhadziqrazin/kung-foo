@@ -1,0 +1,12 @@
+<script lang="ts">
+  import type { PageData } from './$types'
+  export let data: PageData
+</script>
+
+<h1>SveltKit</h1>
+<h2>
+  {data.title}
+</h2>
+<p>
+  {data.text}
+</p>
