@@ -10,3 +10,4 @@
 <p class="text-green-400">
   {data.text}
 </p>
+<button class="btn"> halo </button>
