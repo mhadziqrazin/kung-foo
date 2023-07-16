@@ -1,18 +1,25 @@
 <script lang="ts">
   import { page } from '$app/stores'
+  import { fly } from 'svelte/transition'
 </script>
 
-<div class="flex flex-col items-center w-full gap-10">
+<nav class="text-xl">
   <ul class="steps">
     <a href="/login" class="step step-primary">Login</a>
     <a href="/login/username" class="step" class:step-primary={$page.route.id?.match(/username|photo/g)}> Username </a>
     <a href="/login/photo" class="step" class:step-primary={$page.route.id?.includes('photo')}>Photo</a>
   </ul>
+</nav>
 
-  <div class="w-[90%] flex items-center justify-center py-8 rounded-2xl bg-slate-800">
-    <slot />
+{#key $page.url}
+  <div in:fly={{ x: '-100%', duration: 500 }} class="w-full">
+    <main class="w-[90%] flex items-center justify-center py-8 rounded-2xl bg-slate-800 my-10">
+      <div>
+        <slot />
+      </div>
+    </main>
   </div>
-</div>
+{/key}
 
 <style lang="postcss">
   div :global(h1) {
