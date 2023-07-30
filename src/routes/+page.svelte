@@ -1,12 +1,4 @@
-<script lang="ts">
-  import type { PageData } from './$types'
-  export let data: PageData
-</script>
-
-<h1>SveltKit</h1>
-<h2>
-  {data.title}
-</h2>
-<p>
-  {data.text}
-</p>
+<main>
+  <h1 class="text-center">Hi</h1>
+  <a href="/login">Login</a>
+</main>

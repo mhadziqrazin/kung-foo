@@ -1,21 +1,49 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app'
+import { getApps, initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, type User } from 'firebase/auth'
 import { getStorage } from 'firebase/storage'
+import { writable } from 'svelte/store'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID,
-  appId: process.env.APP_ID
-};
+  apiKey: "AIzaSyCeVZ9lCHRmGmVqdYCe3CmComuTKO3zaAU",
+  authDomain: "kung-foo-e3fe8.firebaseapp.com",
+  projectId: "kung-foo-e3fe8",
+  storageBucket: "kung-foo-e3fe8.appspot.com",
+  messagingSenderId: "575730105147",
+  appId: "1:575730105147:web:04ef3ea36919834991151e"
+}
 
 // Initialize Firebase
-export const app = initializeApp(firebaseConfig)
+if (!getApps.length) {
+  initializeApp(firebaseConfig)
+}
 export const db = getFirestore()
 export const auth = getAuth()
 export const storage = getStorage()
+
+function userStore() {
+  let unsubscribe: () => void
+  if (!auth || !globalThis.window) {
+    console.warn('Auth is not initialized or not in browser')
+    const { subscribe } = writable<User | null>(null)
+    return {
+      subscribe
+    }
+  }
+
+  const { subscribe } = writable(auth.currentUser ?? null, (set) => {
+    unsubscribe = onAuthStateChanged(auth, (user) => {
+      set(user)
+    })
+
+    return () => unsubscribe()
+  })
+
+  return {
+    subscribe
+  }
+}
+
+export const user = userStore()
