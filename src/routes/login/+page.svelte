@@ -1,6 +1,5 @@
 <script lang="ts">
   import { auth } from '$lib/firebase'
-  import { redirect } from '@sveltejs/kit'
   import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth'
 
   const handleSignIn = async () => {
