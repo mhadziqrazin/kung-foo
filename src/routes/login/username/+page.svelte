@@ -8,6 +8,9 @@
   let isAvailable = false
   let debounceTimer: NodeJS.Timeout
 
+  const re = /^(?=[a-zA-Z0-9._]{3,16}$)(?!.*[_.]{2})[^_.].*[^_.]$/
+  $: isValid = username.length > 2 && username.length < 16 && re.test(username)
+
   async function checkAvailability() {
     isAvailable = true
     loading = true
@@ -28,6 +31,10 @@
   }
 
   async function confirmUsername() {
+    if (!isValid || !isAvailable) {
+      return
+    }
+
     const batch = writeBatch(db)
     batch.set(doc(db, 'usernames', username), { uid: $user?.uid })
     batch.set(doc(db, 'users', $user!.uid), {
@@ -52,7 +59,7 @@
   <div class="flex flex-col items-center gap-10">
     <h1>Username</h1>
     <form on:submit|preventDefault={confirmUsername} class="flex flex-col items-center gap-4">
-      <input type="text" placeholder="Username" bind:value={username} on:input={checkAvailability} class="input" />
+      <input type="text" placeholder="Username" bind:value={username} on:input={checkAvailability} class="input" class:input-error={!isValid} />
       {#if isAvailable && !loading}
         <p class="text-green-500">Username available!</p>
       {:else if !isAvailable && !loading}
