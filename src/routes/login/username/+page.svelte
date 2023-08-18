@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { db, user } from '$lib/firebase'
+  import { db, user, userData } from '$lib/firebase'
   import AuthCheck from '$lib/components/AuthCheck.svelte'
   import { doc, getDoc, writeBatch } from 'firebase/firestore'
 
@@ -58,16 +58,21 @@
 <AuthCheck>
   <div class="flex flex-col items-center gap-10">
     <h1>Username</h1>
+    {#if $userData?.username}
+    <p>Your username is {$userData.username}</p>
+    <p>You cannot change your username!</p>
+    {:else}
     <form on:submit|preventDefault={confirmUsername} class="flex flex-col items-center gap-4">
       <input type="text" placeholder="Username" bind:value={username} on:input={checkAvailability} class="input" class:input-error={!isValid} />
       {#if isAvailable && !loading}
-        <p class="text-green-500">Username available!</p>
+      <p class="text-green-500">Username available!</p>
       {:else if !isAvailable && !loading}
-        <p class="text-red-500">Username not available! Try a different one.</p>
+      <p class="text-red-500">Username not available! Try a different one.</p>
       {:else}
-        <p>Loading..</p>
+      <p>Loading..</p>
       {/if}
       <button class="btn btn-success"> Confirm username @{username} </button>
     </form>
+    {/if}
   </div>
 </AuthCheck>
